@@ -2,11 +2,14 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { AnimeData } from '../types/anime';
 
 interface WishlistContextType {
-  wishlist: AnimeData[];
-  addToWishlist: (anime: AnimeData) => void;
-  removeFromWishlist: (animeId: number) => void;
-  isInWishlist: (animeId: number) => boolean;
+  animeWishlist: AnimeData[];
+  mangaWishlist: AnimeData[];
+  addToWishlist: (item: AnimeData) => void;
+  removeFromWishlist: (itemId: number) => void;
+  isInWishlist: (itemId: number) => boolean;
   removeAllFromWishlist: () => void;
+  removeAllFromAnimeWishlist: () => void;
+  removeAllFromMangaWishlist: () => void;
 }
 
 const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
@@ -20,41 +23,68 @@ export const useWishlist = () => {
 };
 
 export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [wishlist, setWishlist] = useState<AnimeData[]>(() => {
-    const savedWishlist = localStorage.getItem('anime-wishlist');
-    return savedWishlist ? JSON.parse(savedWishlist) : [];
+  const [animeWishlist, setAnimeWishlist] = useState<AnimeData[]>(() => {
+    const savedAnimeWishlist = localStorage.getItem('anime-wishlist');
+    return savedAnimeWishlist ? JSON.parse(savedAnimeWishlist) : [];
+  });
+
+  const [mangaWishlist, setMangaWishlist] = useState<AnimeData[]>(() => {
+    const savedMangaWishlist = localStorage.getItem('manga-wishlist');
+    return savedMangaWishlist ? JSON.parse(savedMangaWishlist) : [];
   });
 
   useEffect(() => {
-    localStorage.setItem('anime-wishlist', JSON.stringify(wishlist));
-  }, [wishlist]);
+    localStorage.setItem('anime-wishlist', JSON.stringify(animeWishlist));
+  }, [animeWishlist]);
 
-  const addToWishlist = (anime: AnimeData) => {
-    if (!isInWishlist(anime.mal_id)) {
-      setWishlist([...wishlist, anime]);
+  useEffect(() => {
+    localStorage.setItem('manga-wishlist', JSON.stringify(mangaWishlist));
+  }, [mangaWishlist]);
+
+  const addToWishlist = (item: AnimeData) => {
+    if (!isInWishlist(item.mal_id)) {
+      if (item.type === 'Manga') {
+        setMangaWishlist([...mangaWishlist, item]);
+      } else {
+        setAnimeWishlist([...animeWishlist, item]);
+      }
     }
   };
 
-  const removeFromWishlist = (animeId: number) => {
-    setWishlist(wishlist.filter((item) => item.mal_id !== animeId));
+  const removeFromWishlist = (itemId: number) => {
+    setAnimeWishlist(animeWishlist.filter((item) => item.mal_id !== itemId));
+    setMangaWishlist(mangaWishlist.filter((item) => item.mal_id !== itemId));
   };
 
   const removeAllFromWishlist = () => {
-    setWishlist([]);
+    setAnimeWishlist([]);
+    setMangaWishlist([]);
   };
 
-  const isInWishlist = (animeId: number) => {
-    return wishlist.some((item) => item.mal_id === animeId);
+  const removeAllFromAnimeWishlist = () => {
+    setAnimeWishlist([]);
+  };
+
+  const removeAllFromMangaWishlist = () => {
+    setMangaWishlist([]);
+  };
+
+  const isInWishlist = (itemId: number) => {
+    return animeWishlist.some((item) => item.mal_id === itemId) ||
+           mangaWishlist.some((item) => item.mal_id === itemId);
   };
 
   return (
     <WishlistContext.Provider
       value={{
-        wishlist,
+        animeWishlist,
+        mangaWishlist,
         addToWishlist,
         removeFromWishlist,
         isInWishlist,
         removeAllFromWishlist,
+        removeAllFromAnimeWishlist,
+        removeAllFromMangaWishlist,
       }}
     >
       {children}

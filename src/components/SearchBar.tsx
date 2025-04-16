@@ -21,9 +21,6 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, onReset }) => {
     const query = e.target.value;
     setSearchTerm(query);
     debouncedSearch(query);
-    if (query === '') {
-      onReset();
-    }
   };
 
   useEffect(() => {

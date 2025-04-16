@@ -11,7 +11,7 @@ import { SunIcon, MoonIcon } from '@heroicons/react/24/outline';
 
 function App() {
   const [animeList, setAnimeList] = useState<AnimeData[]>([]);
-  const [filters, setFilters] = useState<AnimeFilters>({});
+  const [filters, setFilters] = useState<AnimeFilters>({ mediaType: 'anime' });
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedAnime, setSelectedAnime] = useState<AnimeData | null>(null);
@@ -51,7 +51,7 @@ function App() {
 
   const handleFilterChange = (newFilters: AnimeFilters) => {
     if (newFilters.isReset) {
-      setFilters({});
+      setFilters({ mediaType: 'anime' });
       setSearchTerm('');
       setPage(1);
     } else {
@@ -111,12 +111,10 @@ function App() {
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {animeList.map((anime) => (
-                      <AnimeCard
-                        key={`search-${anime.mal_id}`}
-                        anime={anime}
-                        onClick={() => handleAnimeClick(anime)}
-                      />
-                    ))}              
+                  <div key={anime.mal_id}>
+                    <AnimeCard anime={anime} />
+                  </div>
+                ))}
                   </div>
                 )}
 
@@ -200,9 +198,7 @@ function App() {
           <WishlistPage onAnimeClick={handleAnimeClick} />
         )}
 
-        {selectedAnime && (
-          <AnimeDetail anime={selectedAnime} onClose={handleCloseDetail} />
-        )}
+
       </div>
     </div>
   );

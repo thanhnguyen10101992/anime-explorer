@@ -1,76 +1,63 @@
-import axios from 'axios';
 import { AnimeResponse, AnimeFilters } from '../types/anime';
 
-const API_BASE_URL = 'https://api.jikan.moe/v4';
+const BASE_URL = 'https://api.jikan.moe/v4';
 
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  timeout: 10000,
-});
-
-export const searchAnime = async (query: string, filters?: AnimeFilters): Promise<AnimeResponse> => {
-  const params: Record<string, any> = {
+export const searchAnime = async (query: string, { mediaType = 'anime', page = 1, ...filters }: AnimeFilters & { page?: number }) => {
+  const params = new URLSearchParams({
     q: query,
-    limit: 24,
-  };
+    page: page.toString(),
+    ...Object.entries(filters).reduce((acc, [key, value]) => {
+      if (!value) return acc;
+      if (key === 'status') {
+        if (mediaType === 'anime') {
+          return { ...acc, status: value === 'airing' ? 'airing' : value === 'complete' ? 'complete' : 'upcoming' };
+        } else if (mediaType === 'manga') {
+          return { ...acc, status: value === 'publishing' ? 'publishing' : value === 'complete' ? 'complete' : 
+                 value === 'hiatus' ? 'hiatus' : value === 'discontinued' ? 'discontinued' : 'upcoming' };
+        }
+      }
+      return { ...acc, [key]: value };
+    }, {})
+  });
 
-  if (filters) {
-    if (filters.type) params.type = filters.type.toLowerCase();
-    if (filters.status) params.status = filters.status.toLowerCase();
-    if (filters.rating) params.rating = filters.rating.toLowerCase();
-    if (filters.page) params.page = filters.page;
-    if (filters.limit) params.limit = filters.limit;
-    if (filters.genres) params.genres = filters.genres.join(',');
-  }
-
-  try {
-    const response = await api.get<AnimeResponse>('/anime', { params });
-    return response.data;
-  } catch (error) {
-    console.error('Error searching anime:', error);
-    throw error;
-  }
+  const endpoint = mediaType === 'manga' ? 'manga' : 'anime';
+  const response = await fetch(`${BASE_URL}/${endpoint}?${params}`);
+  if (!response.ok) throw new Error('Failed to fetch data');
+  return response.json() as Promise<AnimeResponse>;
 };
 
-export const getAnimeById = async (id: number): Promise<AnimeResponse> => {
-  try {
-    const response = await api.get<AnimeResponse>(`/anime/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching anime details:', error);
-    throw error;
-  }
+export const getTopAnime = async (page: number = 1, { mediaType = 'anime', ...filters }: AnimeFilters) => {
+  const params = new URLSearchParams({
+    page: page.toString(),
+    ...Object.entries(filters).reduce((acc, [key, value]) => {
+      if (!value) return acc;
+      if (key === 'status') {
+        if (mediaType === 'anime') {
+          return { ...acc, status: value === 'airing' ? 'airing' : value === 'complete' ? 'complete' : 'upcoming' };
+        } else if (mediaType === 'manga') {
+          return { ...acc, status: value === 'publishing' ? 'publishing' : value === 'complete' ? 'complete' : 
+                 value === 'hiatus' ? 'hiatus' : value === 'discontinued' ? 'discontinued' : 'upcoming' };
+        }
+      }
+      return { ...acc, [key]: value };
+    }, {})
+  });
+
+  const endpoint = mediaType === 'manga' ? 'top/manga' : 'top/anime';
+  const response = await fetch(`${BASE_URL}/${endpoint}?${params}`);
+  if (!response.ok) throw new Error('Failed to fetch data');
+  return response.json() as Promise<AnimeResponse>;
 };
 
-export const getTopAnime = async (page: number = 1, filters?: AnimeFilters): Promise<AnimeResponse> => {
-  const params: Record<string, any> = {
-    page,
-    limit: 24,
-    order_by: 'score',
-    sort: 'desc'
-  };
-
-  if (filters) {
-    if (filters.type) params.type = filters.type.toLowerCase();
-    if (filters.status) params.status = filters.status.toLowerCase();
-    if (filters.rating) params.rating = filters.rating.toLowerCase();
-  }
-
-  try {
-    const response = await api.get<AnimeResponse>('/anime', { params });
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching top anime:', error);
-    throw error;
-  }
+export const getAnimeById = async (id: number, mediaType: 'anime' | 'manga' = 'anime'): Promise<AnimeResponse> => {
+  const endpoint = mediaType === 'manga' ? 'manga' : 'anime';
+  const response = await fetch(`${BASE_URL}/${endpoint}/${id}`);
+  if (!response.ok) throw new Error('Failed to fetch data');
+  return response.json() as Promise<AnimeResponse>;
 };
 
-export const getAnimeGenres = async (): Promise<any> => {
-  try {
-    const response = await api.get('/genres/anime');
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching anime genres:', error);
-    throw error;
-  }
+export const getAnimeGenres = async (): Promise<AnimeResponse> => {
+  const response = await fetch(`${BASE_URL}/genres/anime`);
+  if (!response.ok) throw new Error('Failed to fetch data');
+  return response.json() as Promise<AnimeResponse>;
 };

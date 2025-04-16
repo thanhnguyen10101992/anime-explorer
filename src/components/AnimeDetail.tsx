@@ -26,7 +26,16 @@ export const AnimeDetail: React.FC<AnimeDetailProps> = ({ anime, onClose }) => {
     <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-fadeIn">
       <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-lg rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl transform transition-all duration-300 scale-100 animate-slideUp border border-white/20 dark:border-gray-700/20">
         <div className="sticky top-0 bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg p-6 border-b border-gray-200/50 dark:border-gray-700/50 flex justify-between items-center z-10">
-          <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500 dark:from-purple-400 dark:to-pink-400">{anime.title}</h2>
+          <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500 dark:from-purple-400 dark:to-pink-400">
+            <a
+              href={`https://myanimelist.net/${anime.type.toLowerCase()}/${anime.mal_id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:opacity-80 transition-opacity duration-200"
+            >
+              {anime.title}
+            </a>
+          </h2>
           <div className="flex gap-4">
             <button
               onClick={handleWishlistClick}
@@ -63,7 +72,7 @@ export const AnimeDetail: React.FC<AnimeDetailProps> = ({ anime, onClose }) => {
                   <p className="mt-2 text-lg font-semibold">{anime.type}</p>
                 </div>
                 <div className="bg-white/50 dark:bg-gray-700/50 backdrop-blur-sm p-4 rounded-xl">
-                  <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Episodes</h3>
+                  <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">{anime.type === 'Manga' ? 'Chapters' : 'Episodes'}</h3>
                   <p className="mt-2 text-lg font-semibold">{anime.episodes || 'N/A'}</p>
                 </div>
                 <div className="bg-white/50 dark:bg-gray-700/50 backdrop-blur-sm p-4 rounded-xl">
@@ -80,16 +89,20 @@ export const AnimeDetail: React.FC<AnimeDetailProps> = ({ anime, onClose }) => {
               </div>
 
               <div className="bg-white/50 dark:bg-gray-700/50 backdrop-blur-sm p-4 rounded-xl">
-                <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-3">Studios</h3>
+                <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-3">{anime.type === 'Manga' ? 'Publishers' : 'Studios'}</h3>
                 <div className="flex flex-wrap gap-2">
-                  {anime.studios.map((studio) => (
-                    <span
-                      key={studio.mal_id}
-                      className="px-3 py-1.5 bg-white/70 dark:bg-gray-600/70 rounded-full text-sm font-medium shadow-sm transition-colors duration-200 hover:bg-white dark:hover:bg-gray-600"
-                    >
-                      {studio.name}
-                    </span>
-                  ))}
+                  {anime.studios && anime.studios.length > 0 ? (
+                    anime.studios.map((studio) => (
+                      <span
+                        key={studio.mal_id}
+                        className="px-3 py-1.5 bg-white/70 dark:bg-gray-600/70 rounded-full text-sm font-medium shadow-sm transition-colors duration-200 hover:bg-white dark:hover:bg-gray-600"
+                      >
+                        {studio.name}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-gray-500">No information available</span>
+                  )}
                 </div>
               </div>
 
@@ -114,7 +127,7 @@ export const AnimeDetail: React.FC<AnimeDetailProps> = ({ anime, onClose }) => {
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{anime.synopsis}</p>
           </div>
 
-          {anime.trailer.embed_url && (
+          {anime.trailer && anime.trailer.embed_url && (
             <div className="bg-white/50 dark:bg-gray-700/50 backdrop-blur-sm p-6 rounded-xl">
               <h3 className="text-xl font-semibold mb-4">Trailer</h3>
               <div className="relative w-full h-[400px] rounded-lg overflow-hidden shadow-lg">
