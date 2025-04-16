@@ -3,12 +3,9 @@ import { SearchBar } from './components/SearchBar';
 import { FilterBar } from './components/FilterBar';
 import { AnimeCard } from './components/AnimeCard';
 import { Header } from './components/Header';
-// import { AnimeDetail } from './components/AnimeDetail';
 import { WishlistPage } from './components/WishlistPage';
-
 import { AnimeData, AnimeFilters, Pagination } from './types/anime';
 import { searchAnime, getTopAnime } from './services/api';
-// import { SunIcon, MoonIcon } from '@heroicons/react/24/outline';
 
 function App() {
   const [animeList, setAnimeList] = useState<AnimeData[]>([]);

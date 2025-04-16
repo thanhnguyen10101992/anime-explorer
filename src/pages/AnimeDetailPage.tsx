@@ -21,13 +21,14 @@ export const AnimeDetailPage: React.FC = () => {
       try {
         // Map the type parameter to the correct API endpoint format
         const apiType = type === 'anime' ? 'anime' : 'manga';
-        // console.log('ss',apiType)
+        console.log('ss',apiType)
         if (!apiType) {
           throw new Error('Invalid media type');
         }
-        const response = await axios.get(`https://api.jikan.moe/v4/${apiType}/${id}/full`);
+        const response = await axios.get(`https://api.jikan.moe/v4/${apiType}/${id}`);
         setAnime(response.data.data);
         setError(null);
+        console.log('sss',response.data)
       } catch (err) {
         setError('Failed to load anime details');
         console.error('Error fetching anime details:', err);
@@ -50,7 +51,6 @@ export const AnimeDetailPage: React.FC = () => {
       addToWishlist(anime);
     }
   };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-white to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
