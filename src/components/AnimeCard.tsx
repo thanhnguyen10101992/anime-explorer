@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { AnimeData } from '../types/anime';
 import { useWishlist } from '../context/WishlistContext';
 import { HeartIcon } from '@heroicons/react/24/outline';
@@ -11,7 +11,7 @@ interface AnimeCardProps {
 }
 
 export const AnimeCard: React.FC<AnimeCardProps> = ({ anime }) => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const inWishlist = isInWishlist(anime.mal_id);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -54,7 +54,7 @@ export const AnimeCard: React.FC<AnimeCardProps> = ({ anime }) => {
   const urlParts = anime.url ? anime.url.split('/').filter(part => part !== '') : [];
   return (
     <div
-      onClick={() => navigate(`/${urlParts[2]?.toLowerCase()}/${anime.mal_id}`)}
+      onClick={() => window.open(`/${urlParts[2]?.toLowerCase()}/${anime.mal_id}`, '_blank')}
       className="bg-gray-800/95 rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] hover:ring-2 hover:ring-purple-500/50 cursor-pointer"
     >
       <div className="relative aspect-[3/4]">
