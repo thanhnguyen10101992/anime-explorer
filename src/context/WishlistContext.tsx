@@ -43,7 +43,9 @@ export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const addToWishlist = (item: AnimeData) => {
     if (!isInWishlist(item.mal_id)) {
-      if (item.type === 'Manga') {
+      console.log(item.url);
+      const urlParts = item.url ? item.url.split('/').filter(part => part !== '') : [];
+      if (urlParts[2] === 'manga') {
         setMangaWishlist([...mangaWishlist, item]);
       } else {
         setAnimeWishlist([...animeWishlist, item]);

@@ -4,6 +4,7 @@ import { AnimeData } from '../types/anime';
 import { useWishlist } from '../context/WishlistContext';
 import { HeartIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
+import { Header } from '../components/Header';
 import axios from 'axios';
 
 export const AnimeDetailPage: React.FC = () => {
@@ -13,6 +14,7 @@ export const AnimeDetailPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+
 
   useEffect(() => {
     const fetchAnimeDetails = async () => {
@@ -76,7 +78,8 @@ export const AnimeDetailPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white to-gray-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-white">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-6">
+        <Header />
         <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20 dark:border-gray-700/20 overflow-hidden">
           <div className="sticky top-0 bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg p-6 border-b border-gray-200/50 dark:border-gray-700/50 flex justify-between items-center z-10">
             <div className="flex items-center gap-4">
@@ -89,14 +92,7 @@ export const AnimeDetailPage: React.FC = () => {
                 </svg>
               </button>
               <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500 dark:from-purple-400 dark:to-pink-400">
-                <a
-                  href={`https://myanimelist.net/${anime.type.toLowerCase()}/${anime.mal_id}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block hover:opacity-80 transition-opacity duration-200"
-                >
                   {anime.title}
-                </a>
               </h2>
             </div>
             <button

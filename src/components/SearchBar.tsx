@@ -7,7 +7,7 @@ interface SearchBarProps {
   onReset: () => void;
 }
 
-export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, onReset }) => {
+export const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const debouncedSearch = useCallback(

@@ -1,34 +1,20 @@
 import React from 'react';
 import { useWishlist } from '../context/WishlistContext';
 import { AnimeCard } from './AnimeCard';
-import { AnimeDetail } from './AnimeDetail';
 import { useState } from 'react';
-import { AnimeData } from '../types/anime';
+import { Header } from './Header';
 
-interface WishlistPageProps {
-  onAnimeClick: (anime: AnimeData) => void;
-}
-
-export const WishlistPage: React.FC<WishlistPageProps> = ({ onAnimeClick }) => {
-  const { animeWishlist, mangaWishlist, removeAllFromWishlist, removeAllFromAnimeWishlist, removeAllFromMangaWishlist } = useWishlist();
-  const [selectedAnime, setSelectedAnime] = useState<AnimeData | null>(null);
+export const WishlistPage: React.FC = () => {
+  const { animeWishlist, mangaWishlist, removeAllFromAnimeWishlist, removeAllFromMangaWishlist } = useWishlist();
   const [activeTab, setActiveTab] = useState<'anime' | 'manga'>('anime');
   
   const currentWishlist = activeTab === 'anime' ? animeWishlist : mangaWishlist;
 
-  const handleCloseDetail = () => {
-    setSelectedAnime(null);
-  };
-
-  const handleRemoveAll = () => {
-    if (window.confirm('Are you sure you want to remove all anime from your wishlist?')) {
-      removeAllFromWishlist();
-    }
-  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <div className="container mx-auto px-4 py-6">
+        <Header />
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 font-display tracking-wide mb-4">My Wishlist</h1>
@@ -78,18 +64,10 @@ export const WishlistPage: React.FC<WishlistPageProps> = ({ onAnimeClick }) => {
               <div key={`wishlist-${anime.mal_id}`} className="transform transition-all duration-300 hover:translate-y-[-4px] hover:scale-[1.02]">
                 <AnimeCard
                   anime={anime}
-                  onClick={() => onAnimeClick(anime)}
                 />
               </div>
             ))}
           </div>
-        )}
-
-        {selectedAnime && (
-          <AnimeDetail
-            anime={selectedAnime}
-            onClose={handleCloseDetail}
-          />
         )}
       </div>
     </div>
