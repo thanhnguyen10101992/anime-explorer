@@ -15,6 +15,7 @@ function App() {
   const [currentPage] = useState<'search' | 'wishlist'>('search');
   const [pagination, setPagination] = useState<Pagination | null>(null);
   const [page, setPage] = useState(1);
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     const fetchAnime = async () => {
@@ -55,17 +56,21 @@ function App() {
       setFilters(newFilters);
       setPage(1);
     }
+    // Close filter sidebar on mobile after applying filters
+    if (window.innerWidth < 768) {
+      setShowFilters(false);
+    }
   };
-
-  // const handleAnimeClick = (anime: AnimeData) => {
-  //   setSelectedAnime(anime);
-  // };
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
+    // Scroll to top when changing page
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
- 
+  const toggleFilters = () => {
+    setShowFilters(!showFilters);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white to-gray-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-white transition-colors duration-200">
@@ -73,8 +78,25 @@ function App() {
         <Header />
         {currentPage === 'search' ? (
           <div className="space-y-6">
-            <div className="flex gap-6 min-h-[calc(100vh-12rem)]">
-              <FilterBar filters={filters} onFilterChange={handleFilterChange} />
+            {/* Mobile filter toggle button */}
+            <div className="md:hidden flex justify-end mb-4">
+              <button
+                onClick={toggleFilters}
+                className="px-4 py-2 bg-purple-600 text-white rounded-lg flex items-center space-x-2 hover:bg-purple-700 transition-colors duration-200"
+              >
+                <span>{showFilters ? 'Hide Filters' : 'Show Filters'}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                </svg>
+              </button>
+            </div>
+            
+            <div className="flex flex-col md:flex-row gap-6 min-h-[calc(100vh-12rem)]">
+              {/* Filter sidebar - hidden on mobile by default */}
+              <div className={`${showFilters ? 'block' : 'hidden'} md:block transition-all duration-300 ease-in-out`}>
+                <FilterBar filters={filters} onFilterChange={handleFilterChange} />
+              </div>
+              
               <div className="flex-1">
                 <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-4 mb-6 rounded-2xl">
                   <SearchBar onSearch={handleSearch} onReset={() => handleFilterChange({ isReset: true })} />
@@ -93,7 +115,7 @@ function App() {
                     <p className="text-gray-500 dark:text-gray-500 mt-2">Try adjusting your search or filters</p>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     {animeList.map((anime) => (
                   <div key={anime.mal_id}>
                     <AnimeCard anime={anime} />
@@ -104,11 +126,11 @@ function App() {
 
                 {pagination && pagination.last_visible_page > 1 && animeList.length > 0 && (
                   <div className="mt-8 flex justify-center">
-                    <div className="flex space-x-2">
+                    <div className="flex flex-wrap justify-center space-x-1 md:space-x-2">
                       <button
                         onClick={() => handlePageChange(page - 1)}
                         disabled={page === 1}
-                        className={`px-4 py-2 rounded-md transition-colors duration-200 ${page === 1 ? 'bg-gray-600 cursor-not-allowed' : 'bg-gray-800 hover:bg-gray-700'} text-gray-300`}
+                        className={`px-3 py-2 md:px-4 md:py-2 rounded-md transition-colors duration-200 ${page === 1 ? 'bg-gray-600 cursor-not-allowed' : 'bg-gray-800 hover:bg-gray-700'} text-gray-300 text-sm md:text-base`}
                       >
                         Previous
                       </button>
@@ -149,7 +171,7 @@ function App() {
                         return visiblePages.map((pageNumber, index) => {
                           if (pageNumber === '...') {
                             return (
-                              <span key={`ellipsis-${index}`} className="px-4 py-2 text-gray-300">
+                              <span key={`ellipsis-${index}`} className="px-2 py-2 md:px-4 md:py-2 text-gray-300 text-sm md:text-base">
                                 {pageNumber}
                               </span>
                             );
@@ -158,7 +180,7 @@ function App() {
                             <button
                               key={pageNumber}
                               onClick={() => handlePageChange(Number(pageNumber))}
-                              className={`px-4 py-2 rounded-md transition-colors duration-200 ${page === pageNumber ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'}`}
+                              className={`px-2 py-2 md:px-4 md:py-2 rounded-md transition-colors duration-200 ${page === pageNumber ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300'} text-sm md:text-base`}
                             >
                               {pageNumber}
                             </button>
@@ -168,7 +190,7 @@ function App() {
                       <button
                         onClick={() => handlePageChange(page + 1)}
                         disabled={page >= pagination.last_visible_page}
-                        className={`px-4 py-2 rounded-md transition-colors duration-200 ${page >= pagination.last_visible_page ? 'bg-gray-600 cursor-not-allowed' : 'bg-gray-800 hover:bg-gray-700'} text-gray-300`}
+                        className={`px-3 py-2 md:px-4 md:py-2 rounded-md transition-colors duration-200 ${page >= pagination.last_visible_page ? 'bg-gray-600 cursor-not-allowed' : 'bg-gray-800 hover:bg-gray-700'} text-gray-300 text-sm md:text-base`}
                       >
                         Next
                       </button>

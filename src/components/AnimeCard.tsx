@@ -55,7 +55,7 @@ export const AnimeCard: React.FC<AnimeCardProps> = ({ anime }) => {
   return (
     <div
       onClick={() => navigate(`/${urlParts[2]?.toLowerCase()}/${anime.mal_id}`)}
-      className="bg-gray-800/95 rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] hover:ring-2 hover:ring-purple-500/50 cursor-pointer"
+      className="bg-gray-800/95 rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] hover:ring-2 hover:ring-purple-500/50 cursor-pointer h-full"
     >
       <div className="relative aspect-[3/4]">
         <div className={`absolute inset-0 bg-gradient-to-br from-gray-700 to-gray-800 animate-pulse ${isLoaded ? 'hidden' : 'block'}`} />
@@ -68,22 +68,22 @@ export const AnimeCard: React.FC<AnimeCardProps> = ({ anime }) => {
           loading="lazy"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-100 transition-opacity duration-300">
-          <div className="absolute bottom-0 w-full p-5 space-y-3 transform transition-transform duration-300">
-            <h3 className="text-white font-bold text-lg leading-snug line-clamp-2 hover:text-purple-300 transition-colors duration-200">{anime.title}</h3>
-            <div className="flex items-center justify-between text-sm text-gray-200 font-medium">
-              <span className="bg-gray-800/90 px-3 py-1.5 rounded-full backdrop-blur-sm border border-gray-700/50 shadow-sm">{anime.type}</span>
-              <span className="bg-gray-800/90 px-3 py-1.5 rounded-full backdrop-blur-sm border border-gray-700/50 shadow-sm">{anime.episodes ? `${anime.episodes} eps` : 'N/A'}</span>
+          <div className="absolute bottom-0 w-full p-3 sm:p-5 space-y-2 sm:space-y-3 transform transition-transform duration-300">
+            <h3 className="text-white font-bold text-base sm:text-lg leading-snug line-clamp-2 hover:text-purple-300 transition-colors duration-200">{anime.title}</h3>
+            <div className="flex items-center justify-between text-xs sm:text-sm text-gray-200 font-medium">
+              <span className="bg-gray-800/90 px-2 py-1 sm:px-3 sm:py-1.5 rounded-full backdrop-blur-sm border border-gray-700/50 shadow-sm">{anime.type}</span>
+              <span className="bg-gray-800/90 px-2 py-1 sm:px-3 sm:py-1.5 rounded-full backdrop-blur-sm border border-gray-700/50 shadow-sm">{anime.episodes ? `${anime.episodes} eps` : 'N/A'}</span>
             </div>
           </div>
         </div>
         <button
           onClick={handleWishlistClick}
-          className="absolute top-4 right-4 p-2.5 rounded-full bg-gray-900/70 backdrop-blur-sm hover:bg-gray-900/90 transition-all duration-300 transform hover:scale-110 hover:rotate-12 group shadow-lg focus:outline-none focus:ring-0 active:outline-none active:ring-0 active:shadow-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus:ring-0"
+          className="absolute top-3 right-3 sm:top-4 sm:right-4 p-2 sm:p-2.5 rounded-full bg-gray-900/70 backdrop-blur-sm hover:bg-gray-900/90 transition-all duration-300 transform hover:scale-110 hover:rotate-12 group shadow-lg focus:outline-none focus:ring-0 active:outline-none active:ring-0 active:shadow-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus:ring-0"
         >
           {inWishlist ? (
-            <HeartSolidIcon className="w-6 h-6 text-red-500 drop-shadow-glow animate-heartbeat" />
+            <HeartSolidIcon className="w-5 h-5 sm:w-6 sm:h-6 text-red-500 drop-shadow-glow animate-heartbeat" />
           ) : (
-            <HeartIcon className="w-6 h-6 text-white group-hover:text-red-400 transition-colors duration-300" />
+            <HeartIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white group-hover:text-red-400 transition-colors duration-300" />
           )}
         </button>
       </div>
