@@ -18,8 +18,8 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onFilterChange })
   const currentStatus = filters.mediaType === 'manga' ? mangaStatus : animeStatus;
 
   return (
-    <div className="w-full md:w-64 bg-white dark:bg-gray-800 p-4 md:p-6 rounded-lg shadow-lg transition-colors duration-200 h-full flex flex-col">
-      <div className="space-y-4 md:space-y-6 flex-1 overflow-y-auto max-h-[70vh] md:max-h-none pb-2 pr-1">
+    <div className="w-full md:w-64 bg-white dark:bg-gray-800 p-4 md:p-6 rounded-lg shadow-lg transition-colors duration-200 flex flex-col">
+      <div className="space-y-4 md:space-y-6 overflow-y-auto pb-2 pr-1">
         <div>
           <h3 className="text-base md:text-lg font-semibold mb-2 md:mb-3 text-gray-900 dark:text-white">Media Type</h3>
           <div className="grid grid-cols-2 md:grid-cols-1 gap-2">
