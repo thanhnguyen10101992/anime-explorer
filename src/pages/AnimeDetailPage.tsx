@@ -28,7 +28,6 @@ export const AnimeDetailPage: React.FC = () => {
         const response = await axios.get(`https://api.jikan.moe/v4/${apiType}/${id}`);
         setAnime(response.data.data);
         setError(null);
-        console.log('sss',response.data)
       } catch (err) {
         setError('Failed to load anime details');
         console.error('Error fetching anime details:', err);
